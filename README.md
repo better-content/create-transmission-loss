@@ -34,3 +34,14 @@ Useful commands:
 - Replace placeholder mixin targets/methods with exact deobfuscated names for Create 0.5.1.j.
 - Connect `NetworkScanner` to actual network member traversal and block/type discrimination.
 - Append overlay line to Create goggles tooltip path.
+
+## Gradle wrapper
+
+This repository pins Gradle to **8.8** via `gradle/wrapper/gradle-wrapper.properties`.
+
+> Note: `gradle-wrapper.jar` is intentionally not committed (binary artifacts are not supported in this environment).
+> If needed locally/CI, regenerate it with:
+>
+> ```bash
+> gradle wrapper --gradle-version 8.8
+> ```
