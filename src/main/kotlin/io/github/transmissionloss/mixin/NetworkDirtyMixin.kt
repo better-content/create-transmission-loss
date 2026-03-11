@@ -2,15 +2,13 @@ package io.github.transmissionloss.mixin
 
 import io.github.transmissionloss.network.LossCache
 import io.github.transmissionloss.network.NetworkId
+import io.github.transmissionloss.network.NetworkRuntimeBridge
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.Pseudo
 import org.spongepowered.asm.mixin.injection.At
 import org.spongepowered.asm.mixin.injection.Inject
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 
-/**
- * Hooks network topology changes and marks cache entries dirty for debounced recompute.
- */
 @Pseudo
 @Mixin(targets = ["com.simibubi.create.content.kinetics.KineticNetwork"], remap = false)
 abstract class NetworkDirtyMixin {
@@ -29,7 +27,5 @@ abstract class NetworkDirtyMixin {
         LossCache.markDirty(id)
     }
 
-    private fun transmissionloss$readNetworkId(): NetworkId? {
-        return null
-    }
+    private fun transmissionloss$readNetworkId(): NetworkId? = NetworkRuntimeBridge.resolveNetworkId(this)
 }
