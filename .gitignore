@@ -1,0 +1,10 @@
+# Gradle working directories and build outputs
+.gradle/
+build/
+out/
+
+# JVM build artifacts
+*.class
+
+# Wrapper binary (not supported in PRs)
+gradle/wrapper/gradle-wrapper.jar
