@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 @Mixin(targets = ["com.simibubi.create.content.kinetics.KineticNetwork"], remap = false)
 abstract class StressCalculatorMixin {
     @Inject(method = ["calculateStress"], at = [At("RETURN")], cancellable = true, require = 0)
-    private fun transmissionloss$appendNetworkLoss(cir: CallbackInfoReturnable<Float>) {
-        val networkId = transmissionloss$readNetworkId() ?: return
+    private fun transmissionlossAppendNetworkLoss(cir: CallbackInfoReturnable<Float>) {
+        val networkId = transmissionlossReadNetworkId() ?: return
         val loss = LossCache.getLoss(networkId).toFloat()
         cir.returnValue = cir.returnValue + loss
     }
 
-    private fun transmissionloss$readNetworkId(): NetworkId? = NetworkRuntimeBridge.resolveNetworkId(this)
+    private fun transmissionlossReadNetworkId(): NetworkId? = NetworkRuntimeBridge.resolveNetworkId(this)
 }

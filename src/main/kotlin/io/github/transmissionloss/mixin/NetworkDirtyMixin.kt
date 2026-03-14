@@ -13,19 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 @Mixin(targets = ["com.simibubi.create.content.kinetics.KineticNetwork"], remap = false)
 abstract class NetworkDirtyMixin {
     @Inject(method = ["add"], at = [At("TAIL")], require = 0)
-    private fun transmissionloss$onNodeAdded(ci: CallbackInfo) {
+    private fun transmissionlossOnNodeAdded(ci: CallbackInfo) {
         markDirty()
     }
 
     @Inject(method = ["remove"], at = [At("TAIL")], require = 0)
-    private fun transmissionloss$onNodeRemoved(ci: CallbackInfo) {
+    private fun transmissionlossOnNodeRemoved(ci: CallbackInfo) {
         markDirty()
     }
 
     private fun markDirty() {
-        val id = transmissionloss$readNetworkId() ?: return
+        val id = transmissionlossReadNetworkId() ?: return
         LossCache.markDirty(id)
     }
 
-    private fun transmissionloss$readNetworkId(): NetworkId? = NetworkRuntimeBridge.resolveNetworkId(this)
+    private fun transmissionlossReadNetworkId(): NetworkId? = NetworkRuntimeBridge.resolveNetworkId(this)
 }
