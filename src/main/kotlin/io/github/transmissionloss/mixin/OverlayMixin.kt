@@ -1,11 +1,60 @@
 package io.github.transmissionloss.mixin
 
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity
+import com.simibubi.create.foundation.utility.Lang
+import io.github.transmissionloss.network.NetworkRuntimeBridge
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.Pseudo
+import org.spongepowered.asm.mixin.Shadow
+import org.spongepowered.asm.mixin.injection.At
+import org.spongepowered.asm.mixin.injection.Inject
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-/**
- * Placeholder client hook for adding "Transmission Loss: X SU" into goggles/overlay text.
- */
 @Pseudo
-@Mixin(targets = ["com.simibubi.create.foundation.gui.RemovedGuiOverlay"], remap = false)
-abstract class OverlayMixin
+@Mixin(KineticBlockEntity::class)
+abstract class OverlayMixin {
+    @Shadow
+    abstract fun getTheoreticalSpeed(): Float
+
+    @Suppress("UNUSED_PARAMETER", "USELESS_CAST")
+    @Inject(method = ["addToGoggleTooltip"], at = [At("RETURN")], cancellable = true, require = 0)
+    private fun addTransmissionLossToGoggles(
+        tooltip: MutableList<Component>,
+        _isPlayerSneaking: Boolean,
+        cir: CallbackInfoReturnable<Boolean>
+    ) {
+        val blockEntity = this as Any as KineticBlockEntity
+        val level = blockEntity.level ?: return
+        val state = level.getBlockState(blockEntity.blockPos)
+        val summary = NetworkRuntimeBridge.summarizeBlockLoss(blockEntity, state, getTheoreticalSpeed()) ?: return
+
+        if (!cir.returnValue) {
+            Lang.translate("gui.goggles.kinetic_stats").forGoggles(tooltip)
+        }
+
+        Lang.translate("tooltip.stressImpact")
+            .style(ChatFormatting.GRAY)
+            .forGoggles(tooltip)
+
+        Lang.number(summary.individualLoss)
+            .translate("generic.unit.stress")
+            .style(ChatFormatting.AQUA)
+            .space()
+            .text(ChatFormatting.DARK_GRAY, "from transmission loss")
+            .forGoggles(tooltip, 1)
+
+        Lang.number(summary.networkTypeLoss)
+            .translate("generic.unit.stress")
+            .style(ChatFormatting.AQUA)
+            .space()
+            .text(
+                ChatFormatting.DARK_GRAY,
+                "across ${summary.networkTypeCount} ${summary.networkTypeLabel} on network"
+            )
+            .forGoggles(tooltip, 1)
+
+        cir.returnValue = true
+    }
+}

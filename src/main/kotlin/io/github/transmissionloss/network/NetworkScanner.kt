@@ -18,6 +18,11 @@ object NetworkScanner {
             breakdown.chainDrives * TransmissionLossConfig.chainDrive.get()
         return base * TransmissionLossConfig.speedMultiplier(breakdown.rpm)
     }
+
+    fun computeTypeLoss(count: Int, baseCost: Double, rpm: Float): Double {
+        if (count <= 0 || baseCost <= 0.0) return 0.0
+        return count * baseCost * TransmissionLossConfig.speedMultiplier(rpm)
+    }
 }
 
 data class TransmissionBreakdown(

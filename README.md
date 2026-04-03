@@ -19,20 +19,22 @@ Yes — Forge provides a built-in headless framework via **GameTest**. This proj
 
 Useful commands:
 
-- `gradle test`
-- `gradle runGameTestServer`
+- `./gradlew clean build`
+- `./gradlew runGameTestServer`
+- In game: `/demo transloss`
+- In game: `/transloss debug here`
 
 ## Current implementation notes
 
 - Includes common config for coefficients and speed scaling modes (`NONE`, `LINEAR`, `QUADRATIC`).
-- Adds cache primitives and debounced dirty-marking hooks.
-- Adds command tree stubs: `/transloss debug here`, `/transloss recalc here`, `/transloss profile`.
+- Adds cache primitives and dirty-marking hooks.
+- Samples real Create network members at runtime via reflection and registry IDs.
+- Adds in-world commands: `/transloss debug here`, `/transloss recalc here`, `/transloss profile`, `/demo transloss`.
 - Belt counting strategy is defined as **pulley-to-pulley Manhattan span** for stability across Create 0.5.x internals.
 
 ## Next wiring steps
 
-- Replace placeholder mixin targets/methods with exact deobfuscated names for Create 0.5.1.j.
-- Connect `NetworkScanner` to actual network member traversal and block/type discrimination.
+- Add broader block/tag coverage for decorative and edge-case transmission members.
 - Append overlay line to Create goggles tooltip path.
 
 ## Gradle wrapper

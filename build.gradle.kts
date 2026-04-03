@@ -13,6 +13,9 @@ val createVersion = project.property("create_version") as String
 val modId = project.property("mod_id") as String
 val modName = project.property("mod_name") as String
 val modVersion = project.property("mod_version") as String
+val buildJvmVersion = 17
+val vendoredCreateJar = file("vendor/mods/create-1.20.1-$createVersion.jar")
+val vendoredKffJar = file("vendor/mods/kotlinforforge-$kffVersion-all.jar")
 
 group = project.property("mod_group") as String
 version = modVersion
@@ -27,11 +30,18 @@ repositories {
     maven("https://repo.spongepowered.org/repository/maven-public/")
     maven("https://maven.createmod.net")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
+    flatDir {
+        dirs("vendor/mods")
+    }
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(buildJvmVersion))
     withSourcesJar()
+}
+
+kotlin {
+    jvmToolchain(buildJvmVersion)
 }
 
 minecraft {
@@ -79,8 +89,16 @@ sourceSets.main {
 
 dependencies {
     minecraft("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
-    implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion:slim"))
-    implementation("thedarkcolour:kotlinforforge:$kffVersion")
+    if (vendoredCreateJar.exists()) {
+        implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion"))
+    } else {
+        implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion:slim"))
+    }
+    if (vendoredKffJar.exists()) {
+        implementation(files(vendoredKffJar))
+    } else {
+        implementation("thedarkcolour:kotlinforforge:$kffVersion")
+    }
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
@@ -93,7 +111,8 @@ tasks.processResources {
         "modVersion" to modVersion,
         "minecraftVersion" to minecraftVersion,
         "forgeVersion" to forgeVersion,
-        "createVersion" to createVersion
+        "createVersion" to createVersion,
+        "kffVersion" to kffVersion
     )
     inputs.properties(props)
     filesMatching("META-INF/mods.toml") {
@@ -101,8 +120,21 @@ tasks.processResources {
     }
 }
 
+val syncGameTestStructures by tasks.registering(Copy::class) {
+    from("src/main/resources/gameteststructures")
+    into(layout.projectDirectory.dir("run/gameteststructures"))
+}
+
+tasks.matching { it.name.startsWith("prepareRun") }.configureEach {
+    dependsOn(syncGameTestStructures)
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(17)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

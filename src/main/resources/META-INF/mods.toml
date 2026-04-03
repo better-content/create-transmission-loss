@@ -27,8 +27,15 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.${modId}]]
+modId="kotlinforforge"
+mandatory=true
+versionRange="[${kffVersion},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${modId}]]
 modId="create"
 mandatory=true
-versionRange="[${createVersion},${createVersion}]"
+versionRange="[${createVersion}]"
 ordering="AFTER"
 side="BOTH"
