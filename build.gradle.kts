@@ -10,11 +10,12 @@ val minecraftVersion = project.property("minecraft_version") as String
 val forgeVersion = project.property("forge_version") as String
 val kffVersion = project.property("kff_version") as String
 val createVersion = project.property("create_version") as String
+val createVersionRange = project.property("create_version_range") as String
+val ponderVersion = project.property("ponder_version") as String
 val modId = project.property("mod_id") as String
 val modName = project.property("mod_name") as String
 val modVersion = project.property("mod_version") as String
 val buildJvmVersion = 17
-val vendoredCreateJar = file("vendor/mods/create-1.20.1-$createVersion.jar")
 val vendoredKffJar = file("vendor/mods/kotlinforforge-$kffVersion-all.jar")
 
 group = project.property("mod_group") as String
@@ -89,11 +90,8 @@ sourceSets.main {
 
 dependencies {
     minecraft("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
-    if (vendoredCreateJar.exists()) {
-        implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion"))
-    } else {
-        implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion:slim"))
-    }
+    implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion:slim"))
+    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion"))
     if (vendoredKffJar.exists()) {
         implementation(files(vendoredKffJar))
     } else {
@@ -112,6 +110,7 @@ tasks.processResources {
         "minecraftVersion" to minecraftVersion,
         "forgeVersion" to forgeVersion,
         "createVersion" to createVersion,
+        "createVersionRange" to createVersionRange,
         "kffVersion" to kffVersion
     )
     inputs.properties(props)

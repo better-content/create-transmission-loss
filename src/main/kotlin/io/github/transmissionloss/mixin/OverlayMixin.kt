@@ -1,7 +1,7 @@
 package io.github.transmissionloss.mixin
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity
-import com.simibubi.create.foundation.utility.Lang
+import com.simibubi.create.foundation.utility.CreateLang
 import io.github.transmissionloss.network.NetworkRuntimeBridge
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
@@ -31,21 +31,21 @@ abstract class OverlayMixin {
         val summary = NetworkRuntimeBridge.summarizeBlockLoss(blockEntity, state, getTheoreticalSpeed()) ?: return
 
         if (!cir.returnValue) {
-            Lang.translate("gui.goggles.kinetic_stats").forGoggles(tooltip)
+            CreateLang.translate("gui.goggles.kinetic_stats").forGoggles(tooltip)
         }
 
-        Lang.translate("tooltip.stressImpact")
+        CreateLang.translate("tooltip.stressImpact")
             .style(ChatFormatting.GRAY)
             .forGoggles(tooltip)
 
-        Lang.number(summary.individualLoss)
+        CreateLang.number(summary.individualLoss)
             .translate("generic.unit.stress")
             .style(ChatFormatting.AQUA)
             .space()
             .text(ChatFormatting.DARK_GRAY, "from transmission loss")
             .forGoggles(tooltip, 1)
 
-        Lang.number(summary.networkTypeLoss)
+        CreateLang.number(summary.networkTypeLoss)
             .translate("generic.unit.stress")
             .style(ChatFormatting.AQUA)
             .space()

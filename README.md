@@ -7,7 +7,9 @@ Adds a virtual stress consumer to each Create kinetic network so transmission in
 - Minecraft: 1.20.1
 - Forge: 47.2.0
 - KotlinForForge: 4.11.0
-- Create: **0.5.1.j** (hard pinned in `mods.toml`)
+- Create compile target: **6.0.8-291**
+- Create declared compatibility: **6.0+**
+- Ponder: **1.0.92**
 
 ## Testing strategy
 
@@ -30,7 +32,7 @@ Useful commands:
 - Adds cache primitives and dirty-marking hooks.
 - Samples real Create network members at runtime via reflection and registry IDs.
 - Adds in-world commands: `/transloss debug here`, `/transloss recalc here`, `/transloss profile`, `/demo transloss`.
-- Belt counting strategy is defined as **pulley-to-pulley Manhattan span** for stability across Create 0.5.x internals.
+- Belt counting strategy is defined as **pulley-to-pulley Manhattan span** for stability across Create internals.
 
 ## Next wiring steps
 

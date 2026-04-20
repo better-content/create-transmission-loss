@@ -3,8 +3,7 @@ package io.github.transmissionloss.network
 import io.github.transmissionloss.config.TransmissionLossConfig
 
 /**
- * Version-targeted note:
- * Belts are counted as pulley-pair Manhattan span on purpose for Create 0.5.1 stability.
+ * Belts are counted as pulley-pair Manhattan span on purpose for stability across Create internals.
  */
 object NetworkScanner {
     fun computeLoss(breakdown: TransmissionBreakdown): Double {
