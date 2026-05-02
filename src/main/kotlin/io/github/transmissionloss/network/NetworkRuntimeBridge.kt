@@ -211,13 +211,13 @@ object NetworkRuntimeBridge {
 
     private fun blockBaseLoss(kind: TransmissionBlockKind): Double {
         return when (kind) {
-            TransmissionBlockKind.GEARBOX -> TransmissionLossConfig.gearbox.get()
-            TransmissionBlockKind.LARGE_COGWHEEL -> TransmissionLossConfig.largeCogwheel.get()
-            TransmissionBlockKind.COGWHEEL -> TransmissionLossConfig.cogwheel.get()
-            TransmissionBlockKind.BELT -> TransmissionLossConfig.beltSegment.get()
-            TransmissionBlockKind.ENCASED_SHAFT -> TransmissionLossConfig.encasedShaft.get()
-            TransmissionBlockKind.CHAIN_DRIVE -> TransmissionLossConfig.chainDrive.get()
-            TransmissionBlockKind.SHAFT -> TransmissionLossConfig.shaft.get()
+            TransmissionBlockKind.GEARBOX -> TransmissionLossConfig.gearboxValue()
+            TransmissionBlockKind.LARGE_COGWHEEL -> TransmissionLossConfig.largeCogwheelValue()
+            TransmissionBlockKind.COGWHEEL -> TransmissionLossConfig.cogwheelValue()
+            TransmissionBlockKind.BELT -> TransmissionLossConfig.beltSegmentValue()
+            TransmissionBlockKind.ENCASED_SHAFT -> TransmissionLossConfig.encasedShaftValue()
+            TransmissionBlockKind.CHAIN_DRIVE -> TransmissionLossConfig.chainDriveValue()
+            TransmissionBlockKind.SHAFT -> TransmissionLossConfig.shaftValue()
         }
     }
 
@@ -230,7 +230,7 @@ object NetworkRuntimeBridge {
             key.path == "large_cogwheel" || key.path.endsWith("_large_cogwheel") -> TransmissionBlockKind.LARGE_COGWHEEL
             key.path == "cogwheel" || key.path.endsWith("_cogwheel") -> TransmissionBlockKind.COGWHEEL
             key.path == "belt" -> TransmissionBlockKind.BELT
-            key.path.contains("encased_shaft") && TransmissionLossConfig.includeEncasedShafts.get() -> TransmissionBlockKind.ENCASED_SHAFT
+            key.path.contains("encased_shaft") && TransmissionLossConfig.includeEncasedShaftsValue() -> TransmissionBlockKind.ENCASED_SHAFT
             key.path.contains("chain_drive") || key.path.contains("chain_gearshift") -> TransmissionBlockKind.CHAIN_DRIVE
             key.path == "shaft" || key.path.endsWith("_shaft") -> TransmissionBlockKind.SHAFT
             else -> null

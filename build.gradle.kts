@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("net.minecraftforge.gradle") version "[6.0,6.2)"
     id("org.spongepowered.mixin") version "0.7.+"
+    jacoco
     kotlin("jvm") version "1.9.22"
 }
 
@@ -31,6 +32,7 @@ repositories {
     maven("https://repo.spongepowered.org/repository/maven-public/")
     maven("https://maven.createmod.net")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
+    maven("https://maven.tterrag.com/")
     flatDir {
         dirs("vendor/mods")
     }
@@ -91,7 +93,10 @@ sourceSets.main {
 dependencies {
     minecraft("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
     implementation(fg.deobf("com.simibubi.create:create-$minecraftVersion:$createVersion:slim"))
+    implementation(fg.deobf("dev.engine-room.flywheel:flywheel-forge-1.20.1:1.0.5"))
     implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion"))
+    implementation(fg.deobf("io.github.llamalad7:mixinextras-forge:0.3.6"))
+    implementation(fg.deobf("com.tterrag.registrate:Registrate:MC1.20-1.3.3"))
     if (vendoredKffJar.exists()) {
         implementation(files(vendoredKffJar))
     } else {
@@ -130,6 +135,48 @@ tasks.matching { it.name.startsWith("prepareRun") }.configureEach {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    finalizedBy("jacocoTestReport")
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.test)
+    violationRules {
+        rule {
+            element = "PACKAGE"
+            includes = listOf("io.github.transmissionloss.config")
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.70".toBigDecimal()
+            }
+        }
+        rule {
+            element = "PACKAGE"
+            includes = listOf("io.github.transmissionloss.network")
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.34".toBigDecimal()
+            }
+        }
+    }
+}
+
+tasks.check {
+    dependsOn(tasks.jacocoTestCoverageVerification)
 }
 
 tasks.withType<JavaCompile>().configureEach {

@@ -34,10 +34,11 @@ Useful commands:
 - Adds in-world commands: `/transloss debug here`, `/transloss recalc here`, `/transloss profile`, `/demo transloss`.
 - Belt counting strategy is defined as **pulley-to-pulley Manhattan span** for stability across Create internals.
 
-## Next wiring steps
+## Release status
 
-- Add broader block/tag coverage for decorative and edge-case transmission members.
-- Append overlay line to Create goggles tooltip path.
+- Release validations pass via `./gradlew clean check jacocoTestReport runGameTestServer`.
+- Unit tests and GameTests are wired and passing.
+- JaCoCo coverage gates are enforced for core packages in `build.gradle.kts`.
 
 ## Gradle wrapper
 

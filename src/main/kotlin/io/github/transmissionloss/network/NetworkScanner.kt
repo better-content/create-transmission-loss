@@ -7,14 +7,14 @@ import io.github.transmissionloss.config.TransmissionLossConfig
  */
 object NetworkScanner {
     fun computeLoss(breakdown: TransmissionBreakdown): Double {
-        val base = breakdown.shaftBlocks * TransmissionLossConfig.shaft.get() +
-            breakdown.encasedShaftBlocks * TransmissionLossConfig.encasedShaft.get() +
-            breakdown.cogwheels * TransmissionLossConfig.cogwheel.get() +
-            breakdown.largeCogwheels * TransmissionLossConfig.largeCogwheel.get() +
-            breakdown.gearboxes * TransmissionLossConfig.gearbox.get() +
-            breakdown.beltSegments * TransmissionLossConfig.beltSegment.get() +
-            breakdown.beltPulleys * TransmissionLossConfig.beltPulley.get() +
-            breakdown.chainDrives * TransmissionLossConfig.chainDrive.get()
+        val base = breakdown.shaftBlocks * TransmissionLossConfig.shaftValue() +
+            breakdown.encasedShaftBlocks * TransmissionLossConfig.encasedShaftValue() +
+            breakdown.cogwheels * TransmissionLossConfig.cogwheelValue() +
+            breakdown.largeCogwheels * TransmissionLossConfig.largeCogwheelValue() +
+            breakdown.gearboxes * TransmissionLossConfig.gearboxValue() +
+            breakdown.beltSegments * TransmissionLossConfig.beltSegmentValue() +
+            breakdown.beltPulleys * TransmissionLossConfig.beltPulleyValue() +
+            breakdown.chainDrives * TransmissionLossConfig.chainDriveValue()
         return base * TransmissionLossConfig.speedMultiplier(breakdown.rpm)
     }
 

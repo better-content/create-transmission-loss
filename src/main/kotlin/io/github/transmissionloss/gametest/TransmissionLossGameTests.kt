@@ -14,7 +14,7 @@ object TransmissionLossGameTests {
     @GameTest(template = "empty")
     fun linearSpeedScalingApplies(helper: GameTestHelper) {
         val breakdown = TransmissionBreakdown(shaftBlocks = 1, rpm = 32f)
-        val expected = TransmissionLossConfig.shaft.get() * TransmissionLossConfig.speedMultiplier(32f)
+        val expected = TransmissionLossConfig.shaftValue() * TransmissionLossConfig.speedMultiplier(32f)
         val actual = NetworkScanner.computeLoss(breakdown)
         if (kotlin.math.abs(expected - actual) > 1e-9) {
             helper.fail("Expected $expected but got $actual")

@@ -33,7 +33,7 @@ object LossCache {
         if (force) return true
         val entry = cache[networkId] ?: return true
         if (!entry.dirty) return false
-        return gameTime - entry.lastRecalcGameTime >= TransmissionLossConfig.recalcCooldownTicks.get()
+        return gameTime - entry.lastRecalcGameTime >= TransmissionLossConfig.recalcCooldownTicksValue()
     }
 
     fun size(): Int = cache.size

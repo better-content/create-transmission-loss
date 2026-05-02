@@ -21,18 +21,17 @@ class NetworkScannerTest {
         )
 
         val expectedBase =
-            10 * TransmissionLossConfig.shaft.get() +
-                2 * TransmissionLossConfig.encasedShaft.get() +
-                3 * TransmissionLossConfig.cogwheel.get() +
-                1 * TransmissionLossConfig.largeCogwheel.get() +
-                1 * TransmissionLossConfig.gearbox.get() +
-                8 * TransmissionLossConfig.beltSegment.get() +
-                2 * TransmissionLossConfig.beltPulley.get() +
-                1 * TransmissionLossConfig.chainDrive.get()
+            10 * TransmissionLossConfig.shaftValue() +
+                2 * TransmissionLossConfig.encasedShaftValue() +
+                3 * TransmissionLossConfig.cogwheelValue() +
+                1 * TransmissionLossConfig.largeCogwheelValue() +
+                1 * TransmissionLossConfig.gearboxValue() +
+                8 * TransmissionLossConfig.beltSegmentValue() +
+                2 * TransmissionLossConfig.beltPulleyValue() +
+                1 * TransmissionLossConfig.chainDriveValue()
 
-        val normalized = abs(breakdown.rpm.toDouble()) / TransmissionLossConfig.baseRpm.get()
-        val multiplier = (1.0 + TransmissionLossConfig.k.get() * normalized)
-            .coerceAtMost(TransmissionLossConfig.maxMult.get())
+        val normalized = abs(breakdown.rpm.toDouble()) / 32.0
+        val multiplier = (1.0 + 0.5 * normalized).coerceAtMost(3.0)
 
         assertEquals(expectedBase * multiplier, NetworkScanner.computeLoss(breakdown), 1e-9)
     }
@@ -51,10 +50,9 @@ class NetworkScannerTest {
 
     @Test
     fun computesSameTypeLossFromCountAndSpeed() {
-        val baseCost = TransmissionLossConfig.shaft.get()
-        val normalized = 64.0 / TransmissionLossConfig.baseRpm.get()
-        val multiplier = (1.0 + TransmissionLossConfig.k.get() * normalized)
-            .coerceAtMost(TransmissionLossConfig.maxMult.get())
+        val baseCost = TransmissionLossConfig.shaftValue()
+        val normalized = 64.0 / 32.0
+        val multiplier = (1.0 + 0.5 * normalized).coerceAtMost(3.0)
 
         assertEquals(4 * baseCost * multiplier, NetworkScanner.computeTypeLoss(4, baseCost, 64f), 1e-9)
     }

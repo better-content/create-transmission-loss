@@ -1,15 +1,14 @@
 modLoader="javafml"
 loaderVersion="[47,)"
 license="MIT"
-issueTrackerURL="https://github.com/example/create-transmission-loss/issues"
 
 [[mods]]
 modId="${modId}"
 version="${modVersion}"
 displayName="${modName}"
-authors="Codex"
+authors="gerald"
 description='''
-Adds configurable stress transmission losses for Create kinetic networks.
+Adds configurable stress-unit transmission losses for Create kinetic networks.
 '''
 
 [[dependencies.${modId}]]
