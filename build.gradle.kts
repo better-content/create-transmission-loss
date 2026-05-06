@@ -155,21 +155,23 @@ tasks.jacocoTestCoverageVerification {
     dependsOn(tasks.test)
     violationRules {
         rule {
-            element = "PACKAGE"
-            includes = listOf("io.github.transmissionloss.config")
+            element = "CLASS"
+            includes = listOf(
+                "io.github.transmissionloss.network.NetworkScanner",
+                "io.github.transmissionloss.network.LossCache",
+                "io.github.transmissionloss.network.CachedLoss",
+                "io.github.transmissionloss.network.NetworkId",
+                "io.github.transmissionloss.network.TransmissionBreakdown"
+            )
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"
-                minimum = "0.70".toBigDecimal()
+                minimum = "0.90".toBigDecimal()
             }
-        }
-        rule {
-            element = "PACKAGE"
-            includes = listOf("io.github.transmissionloss.network")
             limit {
-                counter = "LINE"
+                counter = "BRANCH"
                 value = "COVEREDRATIO"
-                minimum = "0.34".toBigDecimal()
+                minimum = "0.90".toBigDecimal()
             }
         }
     }

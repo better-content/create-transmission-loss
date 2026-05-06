@@ -56,4 +56,40 @@ class NetworkScannerTest {
 
         assertEquals(4 * baseCost * multiplier, NetworkScanner.computeTypeLoss(4, baseCost, 64f), 1e-9)
     }
+
+    @Test
+    fun computeTypeLossReturnsZeroWhenCountOrCostAreInvalid() {
+        assertEquals(0.0, NetworkScanner.computeTypeLoss(0, TransmissionLossConfig.shaftValue(), 32f))
+        assertEquals(0.0, NetworkScanner.computeTypeLoss(1, 0.0, 32f))
+    }
+
+    @Test
+    fun computesLossFromBreakdownAcrossAllBlockTypes() {
+        val breakdown = TransmissionBreakdown(
+            shaftBlocks = 1,
+            encasedShaftBlocks = 2,
+            cogwheels = 1,
+            largeCogwheels = 1,
+            gearboxes = 1,
+            beltSegments = 1,
+            beltPulleys = 1,
+            chainDrives = 1,
+            rpm = 48f
+        )
+
+        val expected =
+            TransmissionLossConfig.shaftValue() +
+                2 * TransmissionLossConfig.encasedShaftValue() +
+                TransmissionLossConfig.cogwheelValue() +
+                TransmissionLossConfig.largeCogwheelValue() +
+                TransmissionLossConfig.gearboxValue() +
+                TransmissionLossConfig.beltSegmentValue() +
+                TransmissionLossConfig.beltPulleyValue() +
+                TransmissionLossConfig.chainDriveValue()
+
+        val normalized = abs(48f.toDouble()) / 32.0
+        val multiplier = (1.0 + 0.5 * normalized).coerceAtMost(3.0)
+
+        assertEquals(expected * multiplier, NetworkScanner.computeLoss(breakdown), 1e-9)
+    }
 }
