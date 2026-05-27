@@ -60,7 +60,17 @@ class NetworkScannerTest {
     @Test
     fun computeTypeLossReturnsZeroWhenCountOrCostAreInvalid() {
         assertEquals(0.0, NetworkScanner.computeTypeLoss(0, TransmissionLossConfig.shaftValue(), 32f))
+        assertEquals(0.0, NetworkScanner.computeTypeLoss(-1, TransmissionLossConfig.shaftValue(), 32f))
         assertEquals(0.0, NetworkScanner.computeTypeLoss(1, 0.0, 32f))
+        assertEquals(0.0, NetworkScanner.computeTypeLoss(1, -1.0, 32f))
+    }
+
+    @Test
+    fun computeTypeLossUsesAbsoluteSpeedAndCapsMultiplier() {
+        val baseCost = TransmissionLossConfig.gearboxValue()
+
+        assertEquals(2 * baseCost * 2.0, NetworkScanner.computeTypeLoss(2, baseCost, -64f), 1e-9)
+        assertEquals(2 * baseCost * 3.0, NetworkScanner.computeTypeLoss(2, baseCost, 256f), 1e-9)
     }
 
     @Test
