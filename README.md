@@ -21,8 +21,8 @@ Yes — Forge provides a built-in headless framework via **GameTest**. This proj
 
 Useful commands:
 
-- `./gradlew clean build`
-- `./gradlew runGameTestServer`
+- `./gradlew verifyFast`
+- `./gradlew verifyFull`
 - In game: `/demo transloss`
 - In game: `/transloss debug here`
 
@@ -36,7 +36,7 @@ Useful commands:
 
 ## Release status
 
-- Release validations pass via `./gradlew clean check jacocoTestReport runGameTestServer`.
+- Release validations pass via `./gradlew verifyFull`.
 - Unit tests and GameTests are wired and passing.
 - JaCoCo coverage gates are enforced for core packages in `build.gradle.kts`.
 
