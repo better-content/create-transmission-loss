@@ -10,9 +10,3 @@ out/
 gradle/wrapper/gradle-wrapper.jar
 run/
 .jdks/
-logs/
-*.log
-*.log.gz
-.idea/
-*.iml
-.codex
