@@ -1,7 +1,6 @@
 package io.github.transmissionloss.config
 
 import net.minecraftforge.common.ForgeConfigSpec
-import kotlin.jvm.functions.Function0
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -43,7 +42,7 @@ class TransmissionLossConfigTest {
         )
         method.isAccessible = true
 
-        val throwingReader = Function0<String> { throw IllegalStateException("boom") }
+        val throwingReader: () -> String = { throw IllegalStateException("boom") }
 
         assertEquals("disabled", method.invoke(TransmissionLossConfig, throwingReader, "disabled"))
     }
