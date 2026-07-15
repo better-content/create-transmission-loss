@@ -1,6 +1,7 @@
 package io.github.transmissionloss.config
 
 import net.minecraftforge.common.ForgeConfigSpec
+import kotlin.jvm.functions.Function0
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -37,12 +38,14 @@ class TransmissionLossConfigTest {
     fun fallsBackToDefaultWhenConfigValueAccessThrows() {
         val method = TransmissionLossConfig::class.java.getDeclaredMethod(
             "valueOrDefault",
-            ForgeConfigSpec.ConfigValue::class.java,
+            Function0::class.java,
             Any::class.java
         )
         method.isAccessible = true
 
-        assertEquals("disabled", method.invoke(TransmissionLossConfig, null, "disabled"))
+        val throwingReader = Function0<String> { throw IllegalStateException("boom") }
+
+        assertEquals("disabled", method.invoke(TransmissionLossConfig, throwingReader, "disabled"))
     }
 
 }

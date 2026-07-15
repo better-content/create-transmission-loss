@@ -111,7 +111,11 @@ object TransmissionLossConfig {
 
     enum class SpeedMode { NONE, LINEAR, QUADRATIC }
 
+    private fun <T> valueOrDefault(readValue: () -> T, defaultValue: T): T {
+        return runCatching(readValue).getOrDefault(defaultValue)
+    }
+
     private fun <T> valueOrDefault(value: ForgeConfigSpec.ConfigValue<T>, defaultValue: T): T {
-        return runCatching { value.get() }.getOrDefault(defaultValue)
+        return valueOrDefault({ value.get() }, defaultValue)
     }
 }
