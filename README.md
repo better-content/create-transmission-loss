@@ -50,3 +50,7 @@ This repository pins Gradle to **8.8** via `gradle/wrapper/gradle-wrapper.proper
 > ```bash
 > gradle wrapper --gradle-version 8.8
 > ```
+
+## Community and support
+
+For modpack and mod discussion, playtest feedback, and bug reports, join the [Better Content Discord](https://discord.gg/EkRnZbzqS9).
