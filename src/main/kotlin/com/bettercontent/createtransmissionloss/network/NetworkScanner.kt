@@ -1,6 +1,6 @@
-package io.github.transmissionloss.network
+package com.bettercontent.createtransmissionloss.network
 
-import io.github.transmissionloss.config.TransmissionLossConfig
+import com.bettercontent.createtransmissionloss.config.TransmissionLossConfig
 
 /**
  * Belts are counted as pulley-pair Manhattan span on purpose for stability across Create internals.

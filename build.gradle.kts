@@ -19,11 +19,11 @@ val modVersion = project.property("mod_version") as String
 val buildJvmVersion = 17
 val vendoredKffJar = file("vendor/mods/kotlinforforge-$kffVersion-all.jar")
 
-group = project.property("mod_group") as String
+group = "com.bettercontent"
 version = modVersion
 
 base {
-    archivesName.set("create-transmission-loss")
+    archivesName.set(property("artifact_name") as String)
 }
 
 repositories {
@@ -180,11 +180,11 @@ tasks.jacocoTestCoverageVerification {
         rule {
             element = "CLASS"
             includes = listOf(
-                "io.github.transmissionloss.network.NetworkScanner",
-                "io.github.transmissionloss.network.LossCache",
-                "io.github.transmissionloss.network.CachedLoss",
-                "io.github.transmissionloss.network.NetworkId",
-                "io.github.transmissionloss.network.TransmissionBreakdown"
+                "com.bettercontent.createtransmissionloss.network.NetworkScanner",
+                "com.bettercontent.createtransmissionloss.network.LossCache",
+                "com.bettercontent.createtransmissionloss.network.CachedLoss",
+                "com.bettercontent.createtransmissionloss.network.NetworkId",
+                "com.bettercontent.createtransmissionloss.network.TransmissionBreakdown"
             )
             limit {
                 counter = "LINE"
@@ -226,6 +226,6 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 mixin {
-    add(sourceSets.main.get(), "transmissionloss.refmap.json")
-    config("transmissionloss.mixins.json")
+    add(sourceSets.main.get(), "create_transmission_loss.refmap.json")
+    config("create_transmission_loss.mixins.json")
 }

@@ -1,4 +1,4 @@
-package io.github.transmissionloss.config
+package com.bettercontent.createtransmissionloss.config
 
 import net.minecraftforge.common.ForgeConfigSpec
 import kotlin.test.Test

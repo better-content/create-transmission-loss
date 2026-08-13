@@ -1,6 +1,6 @@
-package io.github.transmissionloss.network
+package com.bettercontent.createtransmissionloss.network
 
-import io.github.transmissionloss.config.TransmissionLossConfig
+import com.bettercontent.createtransmissionloss.config.TransmissionLossConfig
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

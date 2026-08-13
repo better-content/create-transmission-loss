@@ -1,4 +1,4 @@
-package io.github.transmissionloss.network
+package com.bettercontent.createtransmissionloss.network
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

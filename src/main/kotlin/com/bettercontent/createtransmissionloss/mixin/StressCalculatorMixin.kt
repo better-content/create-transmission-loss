@@ -1,6 +1,6 @@
-package io.github.transmissionloss.mixin
+package com.bettercontent.createtransmissionloss.mixin
 
-import io.github.transmissionloss.network.NetworkRuntimeBridge
+import com.bettercontent.createtransmissionloss.network.NetworkRuntimeBridge
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.Pseudo
 import org.spongepowered.asm.mixin.injection.At

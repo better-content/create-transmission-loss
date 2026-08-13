@@ -1,8 +1,8 @@
-package io.github.transmissionloss.mixin
+package com.bettercontent.createtransmissionloss.mixin
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity
 import com.simibubi.create.foundation.utility.CreateLang
-import io.github.transmissionloss.network.NetworkRuntimeBridge
+import com.bettercontent.createtransmissionloss.network.NetworkRuntimeBridge
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import org.spongepowered.asm.mixin.Mixin

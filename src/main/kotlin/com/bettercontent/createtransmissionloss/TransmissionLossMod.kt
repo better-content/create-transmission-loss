@@ -1,9 +1,9 @@
-package io.github.transmissionloss
+package com.bettercontent.createtransmissionloss
 
 import com.mojang.brigadier.CommandDispatcher
-import io.github.transmissionloss.command.TransmissionLossCommands
-import io.github.transmissionloss.config.TransmissionLossConfig
-import io.github.transmissionloss.network.LossCache
+import com.bettercontent.createtransmissionloss.command.TransmissionLossCommands
+import com.bettercontent.createtransmissionloss.config.TransmissionLossConfig
+import com.bettercontent.createtransmissionloss.network.LossCache
 import net.minecraft.commands.CommandSourceStack
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegisterCommandsEvent
@@ -28,6 +28,6 @@ class TransmissionLossMod {
     }
 
     companion object {
-        const val MOD_ID = "transmissionloss"
+        const val MOD_ID = "create_transmission_loss"
     }
 }

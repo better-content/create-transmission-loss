@@ -1,9 +1,9 @@
-package io.github.transmissionloss.command
+package com.bettercontent.createtransmissionloss.command
 
 import com.mojang.brigadier.CommandDispatcher
-import io.github.transmissionloss.network.CachedLoss
-import io.github.transmissionloss.network.LossCache
-import io.github.transmissionloss.network.NetworkRuntimeBridge
+import com.bettercontent.createtransmissionloss.network.CachedLoss
+import com.bettercontent.createtransmissionloss.network.LossCache
+import com.bettercontent.createtransmissionloss.network.NetworkRuntimeBridge
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component

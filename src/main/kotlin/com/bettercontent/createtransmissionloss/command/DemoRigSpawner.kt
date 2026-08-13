@@ -1,4 +1,4 @@
-package io.github.transmissionloss.command
+package com.bettercontent.createtransmissionloss.command
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction

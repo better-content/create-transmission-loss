@@ -17,7 +17,7 @@ Yes — Forge provides a built-in headless framework via **GameTest**. This proj
 
 - Unit tests for deterministic math/cache behavior: `src/test/kotlin/...`
 - Forge GameTests for mod runtime assertions: `src/main/kotlin/.../gametest/...`
-- A `gameTestServer` run config with `forge.enabledGameTestNamespaces=transmissionloss`
+- A `gameTestServer` run config with `forge.enabledGameTestNamespaces=create_transmission_loss`
 
 Useful commands:
 
@@ -54,3 +54,12 @@ This repository pins Gradle to **8.8** via `gradle/wrapper/gradle-wrapper.proper
 ## Community and support
 
 For modpack and mod discussion, playtest feedback, and bug reports, join the [Better Content Discord](https://discord.gg/EkRnZbzqS9).
+
+## Canonical identity
+
+- Repository and Gradle project: `create-transmission-loss`
+- Mod ID and resource namespace: `create_transmission_loss`
+- Maven group: `com.bettercontent`
+- Runtime artifact: `build/libs/create-transmission-loss-<version>.jar`
+
+The canonical identity is a clean break. Legacy mod IDs, resource namespaces, configuration paths, commands, network channels, and saved-data keys are not migrated or aliased.

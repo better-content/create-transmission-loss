@@ -1,9 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "io.github.transmissionloss.mixin",
+  "package": "com.bettercontent.createtransmissionloss.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "transmissionloss.refmap.json",
+  "refmap": "create_transmission_loss.refmap.json",
   "mixins": [
     "StressCalculatorMixin",
     "NetworkDirtyMixin"
