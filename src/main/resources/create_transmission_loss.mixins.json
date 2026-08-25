@@ -3,7 +3,6 @@
   "minVersion": "0.8",
   "package": "com.bettercontent.createtransmissionloss.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "create_transmission_loss.refmap.json",
   "mixins": [
     "StressCalculatorMixin",
     "NetworkDirtyMixin"

@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.Inject
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 @Pseudo
-@Mixin(KineticBlockEntity::class)
+@Mixin(value = [KineticBlockEntity::class], remap = false)
 abstract class OverlayMixin {
-    @Shadow
+    @Shadow(remap = false)
     abstract fun getTheoreticalSpeed(): Float
 
     @Suppress("UNUSED_PARAMETER", "USELESS_CAST")
-    @Inject(method = ["addToGoggleTooltip"], at = [At("RETURN")], cancellable = true, require = 0)
+    @Inject(method = ["addToGoggleTooltip"], at = [At("RETURN")], cancellable = true, require = 0, remap = false)
     private fun addTransmissionLossToGoggles(
         tooltip: MutableList<Component>,
         _isPlayerSneaking: Boolean,

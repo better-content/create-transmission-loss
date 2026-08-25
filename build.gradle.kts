@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.zip.ZipFile
 
 plugins {
     id("net.minecraftforge.gradle") version "[6.0,6.2)"
@@ -146,6 +147,28 @@ val stageRuntimeJar by tasks.registering(Copy::class) {
     rename { "${base.archivesName.get()}-$version.jar" }
 }
 
+val verifyRuntimeMixinMetadata by tasks.registering {
+    group = "verification"
+    description = "Verifies that the runtime JAR does not declare or package a missing Mixin refmap."
+    dependsOn(stageRuntimeJar)
+    doLast {
+        val runtimeJar = layout.buildDirectory.file("libs/${base.archivesName.get()}-$version.jar").get().asFile
+        ZipFile(runtimeJar).use { zip ->
+            val config = zip.getEntry("create_transmission_loss.mixins.json")
+                ?: error("Runtime JAR is missing create_transmission_loss.mixins.json")
+            val configText = zip.getInputStream(config).bufferedReader().use { it.readText() }
+            check(!configText.contains("\"refmap\"")) { "Runtime mixin config still declares a refmap" }
+            check(zip.entries().asSequence().none { it.name.endsWith(".refmap.json") }) {
+                "Runtime JAR unexpectedly packages a refmap"
+            }
+        }
+    }
+}
+
+stageRuntimeJar.configure {
+    finalizedBy(verifyRuntimeMixinMetadata)
+}
+
 tasks.named("assemble") {
     dependsOn(stageRuntimeJar)
 }
@@ -215,6 +238,7 @@ tasks.register("verifyFull") {
     description = "Runs the full verification lane, including headless Forge GameTests."
     dependsOn(tasks.named("verifyFast"))
     dependsOn(tasks.named("headlessGameTest"))
+    dependsOn(verifyRuntimeMixinMetadata)
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -226,6 +250,5 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 mixin {
-    add(sourceSets.main.get(), "create_transmission_loss.refmap.json")
     config("create_transmission_loss.mixins.json")
 }

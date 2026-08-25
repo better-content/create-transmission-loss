@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 @Pseudo
 @Mixin(targets = ["com.simibubi.create.content.kinetics.KineticNetwork"], remap = false)
 abstract class NetworkDirtyMixin {
-    @Inject(method = ["add"], at = [At("TAIL")], require = 0)
+    @Inject(method = ["add"], at = [At("TAIL")], require = 0, remap = false)
     private fun onNodeAdded(ci: CallbackInfo) {
         markDirty()
     }
 
-    @Inject(method = ["remove"], at = [At("TAIL")], require = 0)
+    @Inject(method = ["remove"], at = [At("TAIL")], require = 0, remap = false)
     private fun onNodeRemoved(ci: CallbackInfo) {
         markDirty()
     }
