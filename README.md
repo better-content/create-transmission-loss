@@ -5,7 +5,7 @@ Adds a virtual stress consumer to each Create kinetic network so transmission in
 ## Version targeting
 
 - Minecraft: 1.20.1
-- Forge: 47.2.0
+- Forge: 47.4.13
 - KotlinForForge: 4.11.0
 - Create compile target: **6.0.8-291**
 - Create declared compatibility: **6.0+**
@@ -44,7 +44,7 @@ Useful commands:
 
 This repository pins Gradle to **8.8** via `gradle/wrapper/gradle-wrapper.properties`.
 
-> Note: `gradle-wrapper.jar` is intentionally not committed (binary artifacts are not supported in this environment), and is ignored by `.gitignore`.
+The Gradle wrapper, including `gradle/wrapper/gradle-wrapper.jar`, is tracked so the documented wrapper commands work from a fresh checkout.
 > If needed locally/CI, regenerate it with:
 >
 > ```bash
