@@ -1,6 +1,5 @@
 package com.bettercontent.createtransmissionloss.config
 
-import net.minecraftforge.common.ForgeConfigSpec
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -21,30 +20,16 @@ class TransmissionLossConfigTest {
 
     @Test
     fun appliesMultiplierFallbackAndClampsToMaxWhenConfigured() {
-        val method = TransmissionLossConfig::class.java.getDeclaredMethod(
-            "valueOrDefault",
-            ForgeConfigSpec.ConfigValue::class.java,
-            Any::class.java
-        )
-        method.isAccessible = true
-
-        assertEquals(17, method.invoke(TransmissionLossConfig, null, 17))
+        assertEquals(17, TransmissionLossConfig.valueOrDefault(null, 17))
         assertEquals(2.0, TransmissionLossConfig.speedMultiplier(64f), 1e-9)
         assertEquals(3.0, TransmissionLossConfig.speedMultiplier(1234f), 1e-9)
     }
 
     @Test
     fun fallsBackToDefaultWhenConfigValueAccessThrows() {
-        val method = TransmissionLossConfig::class.java.getDeclaredMethod(
-            "valueOrDefault",
-            Function0::class.java,
-            Any::class.java
-        )
-        method.isAccessible = true
-
         val throwingReader: () -> String = { throw IllegalStateException("boom") }
 
-        assertEquals("disabled", method.invoke(TransmissionLossConfig, throwingReader, "disabled"))
+        assertEquals("disabled", TransmissionLossConfig.valueOrDefault(throwingReader, "disabled"))
     }
 
 }

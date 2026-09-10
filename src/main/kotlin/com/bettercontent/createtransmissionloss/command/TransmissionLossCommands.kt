@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.bettercontent.createtransmissionloss.network.CachedLoss
 import com.bettercontent.createtransmissionloss.network.LossCache
 import com.bettercontent.createtransmissionloss.network.NetworkRuntimeBridge
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component
@@ -67,7 +68,7 @@ object TransmissionLossCommands {
             return null
         }
 
-        val blockEntity = player.serverLevel().getBlockEntity(hit.blockPos) ?: return null
+        val blockEntity = player.serverLevel().getBlockEntity(hit.blockPos) as? KineticBlockEntity ?: return null
         return NetworkRuntimeBridge.refreshLossFromBlockEntity(blockEntity, force)
     }
 

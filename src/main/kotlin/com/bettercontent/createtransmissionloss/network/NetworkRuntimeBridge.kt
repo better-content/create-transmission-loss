@@ -1,11 +1,10 @@
 package com.bettercontent.createtransmissionloss.network
 
 import com.bettercontent.createtransmissionloss.config.TransmissionLossConfig
-import net.minecraft.core.BlockPos
-import net.minecraft.world.level.Level
+import com.simibubi.create.content.kinetics.KineticNetwork
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.registries.ForgeRegistries
-import java.lang.reflect.Modifier
 import kotlin.math.abs
 
 object NetworkRuntimeBridge {
@@ -22,7 +21,7 @@ object NetworkRuntimeBridge {
         return baseCost * TransmissionLossConfig.speedMultiplier(rpm)
     }
 
-    fun summarizeBlockLoss(blockEntity: Any, state: BlockState, rpm: Float): BlockLossSummary? {
+    fun summarizeBlockLoss(blockEntity: KineticBlockEntity, state: BlockState, rpm: Float): BlockLossSummary? {
         val kind = blockKind(state) ?: return null
         val baseCost = blockBaseLoss(kind)
         if (baseCost <= 0.0) return null
@@ -40,22 +39,15 @@ object NetworkRuntimeBridge {
         )
     }
 
-    fun resolveNetworkId(network: Any): NetworkId? {
-        val members = findMemberValues(network)
+    fun resolveNetworkId(network: KineticNetwork): NetworkId? {
+        val members = networkMembers(network)
         if (members.isEmpty()) return null
-
-        val canonicalPos = members.asSequence()
-            .mapNotNull { extractBlockPosLong(it) }
-            .minOrNull() ?: return null
-
-        val dimension = members.asSequence()
-            .mapNotNull { extractDimensionId(it) }
-            .firstOrNull() ?: "minecraft:overworld"
-
-        return NetworkId(dimension, canonicalPos)
+        return selectNetworkId(members.map {
+            NetworkMemberIdentity(it.level?.dimension()?.location()?.toString(), it.blockPos.asLong())
+        })
     }
 
-    fun refreshLoss(network: Any, force: Boolean = false): CachedLoss? {
+    fun refreshLoss(network: KineticNetwork, force: Boolean = false): CachedLoss? {
         val sample = sampleNetwork(network) ?: return null
         val cached = LossCache.snapshot(sample.id)
         val shouldRefresh = force ||
@@ -70,21 +62,19 @@ object NetworkRuntimeBridge {
         return LossCache.snapshot(sample.id)
     }
 
-    fun refreshLossFromBlockEntity(blockEntity: Any, force: Boolean = false): CachedLoss? {
-        val network = resolveNetwork(blockEntity) ?: return null
-        return refreshLoss(network, force)
-    }
+    fun refreshLossFromBlockEntity(blockEntity: KineticBlockEntity, force: Boolean = false): CachedLoss? =
+        refreshLoss(blockEntity.getOrCreateNetwork(), force)
 
-    private fun sampleNetwork(network: Any): NetworkSample? {
-        val members = findMemberValues(network)
+    private fun sampleNetwork(network: KineticNetwork): NetworkSample? {
+        val members = networkMembers(network)
         if (members.isEmpty()) return null
 
         val canonicalPos = members.asSequence()
-            .mapNotNull { extractBlockPos(it)?.asLong() ?: extractBlockPosLong(it) }
+            .map { it.blockPos.asLong() }
             .minOrNull() ?: return null
 
         val dimension = members.asSequence()
-            .mapNotNull { extractDimensionId(it) }
+            .mapNotNull { it.level?.dimension()?.location()?.toString() }
             .firstOrNull() ?: "minecraft:overworld"
 
         var gameTime = 0L
@@ -92,16 +82,11 @@ object NetworkRuntimeBridge {
         val tally = BreakdownTally()
 
         members.forEach { member ->
-            extractLevel(member)?.let { level ->
+            member.level?.let { level ->
                 gameTime = maxOf(gameTime, level.gameTime)
-                extractBlockPos(member)?.let { pos ->
-                    countTransmissionBlock(level.getBlockState(pos), tally)
-                }
+                countTransmissionBlock(level.getBlockState(member.blockPos), tally)
             }
-
-            extractSpeed(member)?.let { speed ->
-                maxRpm = maxOf(maxRpm, abs(speed))
-            }
+            maxRpm = maxOf(maxRpm, abs(member.speed))
         }
 
         return NetworkSample(
@@ -111,86 +96,17 @@ object NetworkRuntimeBridge {
         )
     }
 
-    private fun findMemberValues(network: Any): Collection<Any> {
-        val fields = network.javaClass.declaredFields
-            .filterNot { Modifier.isStatic(it.modifiers) }
-            .sortedBy {
-                when (it.name) {
-                    "members" -> 0
-                    "sources" -> 1
-                    else -> 2
-                }
-            }
-        for (field in fields) {
-            runCatching {
-                field.isAccessible = true
-                val value = field.get(network)
-                if (value is Map<*, *>) {
-                    val values = value.values.filterNotNull()
-                    if (values.isNotEmpty()) {
-                        return values
-                    }
-                }
-            }
-        }
-        return emptyList()
+    private fun networkMembers(network: KineticNetwork): Set<KineticBlockEntity> =
+        (network.members.keys + network.sources.keys).toSet()
+
+    internal fun selectNetworkId(members: Collection<NetworkMemberIdentity>): NetworkId? {
+        val canonicalPos = members.minOfOrNull(NetworkMemberIdentity::blockPos) ?: return null
+        val dimension = members.firstNotNullOfOrNull(NetworkMemberIdentity::dimension)
+            ?: "minecraft:overworld"
+        return NetworkId(dimension, canonicalPos)
     }
 
-    private fun extractBlockPosLong(member: Any): Long? {
-        return runCatching {
-            val worldPositionField = member.javaClass.getDeclaredField("worldPosition")
-            worldPositionField.isAccessible = true
-            val pos = worldPositionField.get(member) ?: return null
-            val asLong = pos.javaClass.methods.firstOrNull { it.name == "asLong" && it.parameterCount == 0 } ?: return null
-            asLong.invoke(pos) as? Long
-        }.getOrNull()
-    }
-
-    private fun extractDimensionId(member: Any): String? {
-        return runCatching {
-            val levelMethod = member.javaClass.methods.firstOrNull { it.name == "getLevel" && it.parameterCount == 0 } ?: return null
-            val level = levelMethod.invoke(member) ?: return null
-            val dimensionMethod = level.javaClass.methods.firstOrNull { it.name == "dimension" && it.parameterCount == 0 } ?: return null
-            val resourceKey = dimensionMethod.invoke(level) ?: return null
-            val locationMethod = resourceKey.javaClass.methods.firstOrNull { it.name == "location" && it.parameterCount == 0 } ?: return null
-            val location = locationMethod.invoke(resourceKey) ?: return null
-            location.toString()
-        }.getOrNull()
-    }
-
-    private fun extractLevel(member: Any): Level? {
-        return runCatching {
-            val levelMethod = member.javaClass.methods.firstOrNull { it.name == "getLevel" && it.parameterCount == 0 } ?: return null
-            levelMethod.invoke(member) as? Level
-        }.getOrNull()
-    }
-
-    private fun extractBlockPos(member: Any): BlockPos? {
-        return runCatching {
-            val worldPositionField = member.javaClass.getDeclaredField("worldPosition")
-            worldPositionField.isAccessible = true
-            worldPositionField.get(member) as? BlockPos
-        }.getOrNull()
-    }
-
-    private fun extractSpeed(member: Any): Float? {
-        return runCatching {
-            val speedMethod = member.javaClass.methods.firstOrNull { it.name == "getSpeed" && it.parameterCount == 0 } ?: return null
-            when (val speed = speedMethod.invoke(member)) {
-                is Float -> speed
-                is Double -> speed.toFloat()
-                is Number -> speed.toFloat()
-                else -> null
-            }
-        }.getOrNull()
-    }
-
-    private fun resolveNetwork(blockEntity: Any): Any? {
-        return runCatching {
-            val method = blockEntity.javaClass.methods.firstOrNull { it.name == "getOrCreateNetwork" && it.parameterCount == 0 } ?: return null
-            method.invoke(blockEntity)
-        }.getOrNull()
-    }
+    internal data class NetworkMemberIdentity(val dimension: String?, val blockPos: Long)
 
     private fun countTransmissionBlock(state: BlockState, tally: BreakdownTally) {
         when (blockKind(state)) {
