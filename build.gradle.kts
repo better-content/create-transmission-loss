@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.zip.ZipFile
 
 plugins {
-    id("net.minecraftforge.gradle") version "[6.0,6.2)"
-    id("org.spongepowered.mixin") version "0.7.+"
+    id("net.minecraftforge.gradle") version "6.0.54"
+    id("org.spongepowered.mixin") version "0.7.38"
     jacoco
     kotlin("jvm") version "1.9.22"
 }
@@ -18,7 +18,6 @@ val modId = project.property("mod_id") as String
 val modName = project.property("mod_name") as String
 val modVersion = project.property("mod_version") as String
 val buildJvmVersion = 17
-val vendoredKffJar = file("vendor/mods/kotlinforforge-$kffVersion-all.jar")
 
 group = "com.bettercontent"
 version = modVersion
@@ -34,9 +33,6 @@ repositories {
     maven("https://maven.createmod.net")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
     maven("https://maven.tterrag.com/")
-    flatDir {
-        dirs("vendor/mods")
-    }
 }
 
 java {
@@ -98,11 +94,7 @@ dependencies {
     implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion"))
     implementation(fg.deobf("io.github.llamalad7:mixinextras-forge:0.3.6"))
     implementation(fg.deobf("com.tterrag.registrate:Registrate:MC1.20-1.3.3"))
-    if (vendoredKffJar.exists()) {
-        implementation(files(vendoredKffJar))
-    } else {
-        implementation("thedarkcolour:kotlinforforge:$kffVersion")
-    }
+    implementation("thedarkcolour:kotlinforforge:$kffVersion")
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
